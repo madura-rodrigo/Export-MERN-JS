@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+let user = {
   firstName: {
     type: String,
     required: true,
@@ -42,6 +42,34 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
+};
 
-module.exports = User = mongoose.model("user", UserSchema);
+let seller = Object.create(user);
+seller = {
+  companyName: {
+    type: String,
+    required: true,
+  },
+  review: {
+    type: Object,
+  },
+  categoryId: {
+    type: String,
+    required: true,
+  },
+};
+
+let buyer = Object.create(user);
+buyer = {
+  session: {
+    type: Object,
+  },
+};
+
+const SellerSchema = new mongoose.Schema(seller);
+
+const BuyerSchema = new mongoose.Schema(buyer);
+
+module.exports = Seller = mongoose.model("seller", SellerSchema, "users");
+
+module.exports = Buyer = mongoose.model("buyer", BuyerSchema, "users");
