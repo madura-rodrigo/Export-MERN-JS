@@ -1,8 +1,17 @@
-const express = require('express');
+const express = require("express");
+const connectDB = require("./config/db");
 
 const app = express();
 
-app.get('/', (req, res) => res.send('API running.'));
+connectDB();
+
+app.use(express.json({ extended: false }));
+
+app.get("/", (req, res) => res.send("API running."));
+
+app.use("/api/auth", require("./routes/api/auth"));
+
+app.use("/api/sellers", require("./routes/api/seller"));
 
 const PORT = process.env.PORT || 5000;
 

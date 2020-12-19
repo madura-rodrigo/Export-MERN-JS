@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://madurascpdn:hjkl678!@devcluster.skilu.mongodb.net/<dbname>?retryWrites=true&w=majority",
+    "jwtSecretKey" : "mysecrettoken"
+}
