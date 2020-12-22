@@ -51,19 +51,41 @@ const UserSchema = new Schema(
 
 const User = mongoose.model("User", UserSchema);
 
+const ReviewSchema = new Schema({
+  seller: {
+    type: Schema.Types.ObjectId,
+    ref: "Seller",
+  },
+  reviewer: {
+    type: String,
+  },
+  rate: {
+    type: Number,
+  },
+  comment: {
+    type: String,
+  },
+});
+
+const Review = mongoose.model("Review", ReviewSchema);
+
 const SellerSchema = new Schema({
   companyName: {
     type: String,
     required: true,
   },
-  review: {
-    type: Object,
-  },
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review",
+    },
+  ],
   categoryId: {
     type: String,
     required: true,
   },
 });
+
 const Seller = User.discriminator("Seller", SellerSchema);
 
 const BuyerSchema = new Schema({
