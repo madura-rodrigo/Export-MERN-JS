@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const { check, validationResult } = require("express-validator");
 
-const User = require("../../models/User");
+const { Seller } = require("../../models/User");
 
 // @route POST api/sellers
 // @desc Test
@@ -20,6 +20,8 @@ router.post(
     check("country", "Country is required").not().isEmpty(),
     check("area", "Area is required").not().isEmpty(),
     check("address", "Adress is required.").not().isEmpty(),
+    check("categoryId", "Category is required.").not().isEmpty(),
+    check("companyName", "Company is required.").not().isEmpty(),
     check("phone", "Phone number is required").not().isEmpty(),
     check("postalCode", "Postal code is required").not().isEmpty(),
     check("password", "Need password with 6 or more characters.").isLength({
@@ -43,10 +45,14 @@ router.post(
         phone,
         postalCode,
         password,
+        companyName,
+        categoryId,
       } = req.body;
 
       //Check user in DB
-      let user = await User.findOne({ email });
+
+      console.log(typeof Seller);
+      let user = await Seller.findOne({ email });
       //Response error
       if (user) {
         return res.status(400).json({ errors: [{ msg: "User exists" }] });
@@ -59,7 +65,7 @@ router.post(
       });
 
       //Make new user
-      user = new User({
+      user = new Seller({
         firstName,
         lastName,
         email,
@@ -70,6 +76,8 @@ router.post(
         postalCode,
         avatar,
         password,
+        companyName,
+        categoryId,
       });
 
       //Encrypt password
