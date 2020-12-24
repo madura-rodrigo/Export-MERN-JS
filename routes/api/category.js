@@ -41,7 +41,7 @@ router.post(
         d: "mm",
       });
 
-      //Make new user
+      //Make new category
       category = new Category({
         name,
         description,
@@ -93,22 +93,34 @@ router.post(
         {
           useFindAndModify: false,
           new: true,
-          fields: { id, name, description, avatar },
         },
         (err, result) => {
           if (err) {
             console.error(err.message);
             res.status(500).send(err);
           } else {
-            res.json(result.toObject);
+            return res.json(result);
           }
         }
-      );
+      ).select("id name description avatar");
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
     }
   }
 );
+
+// @route GET api/category
+// @desc Test
+// @access Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id).select("id name description avatar");
+    res.json(category);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+});
 
 module.exports = router;
