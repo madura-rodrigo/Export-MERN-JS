@@ -51,24 +51,6 @@ const UserSchema = new Schema(
 
 const User = mongoose.model("User", UserSchema);
 
-const ReviewSchema = new Schema({
-  seller: {
-    type: Schema.Types.ObjectId,
-    ref: "Seller",
-  },
-  reviewer: {
-    type: String,
-  },
-  rate: {
-    type: Number,
-  },
-  comment: {
-    type: String,
-  },
-});
-
-const Review = mongoose.model("Review", ReviewSchema);
-
 const SellerSchema = new Schema({
   companyName: {
     type: String,
@@ -80,8 +62,9 @@ const SellerSchema = new Schema({
       ref: "Review",
     },
   ],
-  categoryId: {
-    type: String,
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
     required: true,
   },
 });
