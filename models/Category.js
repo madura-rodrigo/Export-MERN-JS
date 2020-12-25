@@ -11,7 +11,7 @@ const CategorySchema = new Schema({
     type: String,
     required: true,
   },
-  avatar: {
+  iconUrl: {
     type: String,
     required: true,
   },

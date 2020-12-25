@@ -13,10 +13,12 @@ const { Router } = require("express");
 // @access Private
 router.post(
   "/",
-  auth,
   [
-    check("name", "Category name is required").not().isEmpty(),
-    check("description", "Category description is required").not().isEmpty(),
+    auth,
+    [
+      check("name", "Category name is required").not().isEmpty(),
+      check("description", "Category description is required").not().isEmpty(),
+    ],
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -25,14 +27,30 @@ router.post(
     }
 
     try {
-      const { name, description } = req.body;
+      const { id, name, description, iconUrl } = req.body;
+
+      const categoryFields = {};
+      if (id) categoryFields.id = id;
+      if (name) categoryFields.name = name;
+      if (description) categoryFields.description = description;
+      if (iconUrl) categoryFields.iconUrl = iconUrl;
 
       //Check user in DB
-
-      let category = await Category.findOne({ name });
-      //Response error
-      if (category) {
-        return res.status(400).json({ errors: [{ msg: "Category exists" }] });
+      if (categoryFields.id) {
+        let category = await Category.findById(categoryFields.id);
+        if (category) {
+          //Update category
+          category = await Category.findOneAndUpdate(
+            { _id: categoryFields.id },
+            {
+              $set: categoryFields,
+            },
+            {
+              new: true,
+            }
+          ).select("id name description iconUrl");
+          return res.json(category);
+        }
       }
 
       const avatar = gravatar.url(name, {
@@ -40,16 +58,12 @@ router.post(
         r: "pg",
         d: "mm",
       });
+      categoryFields.iconUrl = avatar;
 
       //Make new category
-      category = new Category({
-        name,
-        description,
-        avatar,
-      });
-
+      category = new Category(categoryFields);
       category.save();
-      return res.status(200).send(category.json);
+      return res.send(category);
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -57,68 +71,42 @@ router.post(
   }
 );
 
-// @route POST api/category/id
-// @desc Test
-// @access Private
-router.post(
-  "/id",
-  auth,
-  [
-    check("name", "Category name is required").not().isEmpty(),
-    check("description", "Category description is required").not().isEmpty(),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const { id, name, description } = req.body;
-
-      const avatar = gravatar.url(name, {
-        s: "200",
-        r: "pg",
-        d: "mm",
-      });
-
-      //Update category
-      await Category.findOneAndUpdate(
-        { _id: id },
-        {
-          name,
-          description,
-          avatar,
-        },
-        {
-          useFindAndModify: false,
-          new: true,
-        },
-        (err, result) => {
-          if (err) {
-            console.error(err.message);
-            res.status(500).send(err);
-          } else {
-            return res.json(result);
-          }
-        }
-      ).select("id name description avatar");
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send("Server Error");
-    }
-  }
-);
-
-// @route GET api/category
-// @desc Test
+// @route GET api/category/id
+// @desc get category by id
 // @access Private
 router.get("/:id", auth, async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id).select("id name description avatar");
+    const category = await Category.findById(req.params.id).select(
+      "id name description iconUrl"
+    );
+    if (!category)
+      return res.status(400).json({ msg: "There is no category for this id" });
     res.json(category);
   } catch (err) {
     console.error(err.message);
+    if (err.kind == "ObjectId") {
+      return res.status(400).json({ msg: "There is no category for this id" });
+    }
+    res.status(500).send("Server error");
+  }
+});
+
+// @route GET api/category/search
+// @desc get category by id
+// @access Private
+router.get("/:search", auth, async (req, res) => {
+  try {
+    const category = await Category.find(req.params.search).select(
+      "id name description iconUrl"
+    );
+    if (!category)
+      return res.status(400).json({ msg: "There is no category for this id" });
+    res.json(category);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind == "ObjectId") {
+      return res.status(400).json({ msg: "There is no category for this id" });
+    }
     res.status(500).send("Server error");
   }
 });
