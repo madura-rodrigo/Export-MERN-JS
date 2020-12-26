@@ -92,13 +92,16 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 // @route GET api/category/search
-// @desc get category by id
+// @desc search category
 // @access Private
-router.get("/:search", auth, async (req, res) => {
+router.get("/search/:search", auth, async (req, res) => {
   try {
-    const category = await Category.find(req.params.search).select(
-      "id name description iconUrl"
-    );
+    const category = await Category.find({
+      $or: [
+        { name: { $regex: ".*" + req.params.search + ".*" } },
+        { description: { $regex: ".*" + req.params.search + ".*" } },
+      ],
+    }).select("id name description iconUrl");
     if (!category)
       return res.status(400).json({ msg: "There is no category for this id" });
     res.json(category);

@@ -10,6 +10,19 @@ const connectDB = async () => {
       useCreateIndex: true,
       useFindAndModify: false,
     });
+    mongoose.set("debug", function (coll, method, query, doc, options) {
+      let set = {
+        coll: coll,
+        method: method,
+        query: query,
+        doc: doc,
+        options: options,
+      };
+
+      console.log({
+        dbQuery: set,
+      });
+    });
   } catch (err) {
     console.error(err.message);
     process.exit(1);
