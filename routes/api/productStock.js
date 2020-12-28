@@ -8,7 +8,7 @@ const ProductStock = require("../../models/ProductStock");
 const Product = require("../../models/Product");
 const { Router } = require("express");
 
-// @route POST api/productStock
+// @route POST api/product-stocks
 // @desc Test
 // @access Private
 router.post(
@@ -96,15 +96,19 @@ router.post(
   }
 );
 
-// @route GET api/product/id
+// @route GET api/product-stocks
 // @desc get category by id
 // @access Private
 router.get("/:id", auth, async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-    if (!product)
-      return res.status(400).json({ msg: "There is no product for this id" });
-    res.json(product);
+    const productStock = await ProductStock.findOne({
+      product: req.params.id,
+    }).populate("Product");
+    if (!productStock)
+      return res
+        .status(400)
+        .json({ msg: "There is no productStock for this product" });
+    res.json(productStock);
   } catch (err) {
     console.error(err.message);
     if (err.kind == "ObjectId") {
@@ -114,20 +118,22 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// @route GET api/product/search
-// @desc search category
+// @route GET api/product-stocks/category/id
+// @desc get product stocks by category
 // @access Private
-router.get("/search/:search", auth, async (req, res) => {
+router.get("/category/:id", auth, async (req, res) => {
   try {
-    const product = await Product.find({
-      $or: [
-        { name: { $regex: ".*" + req.params.search + ".*" } },
-        { description: { $regex: ".*" + req.params.search + ".*" } },
-      ],
-    });
-    if (!product)
-      return res.status(400).json({ msg: "There is no product for this id" });
-    res.json(product);
+    const productList = await Product.find({ category: req.params.id });
+    if (!productList || productList.isEmpty())
+      return res
+        .status(400)
+        .json({ msg: "There are no products for this category." });
+    const productIds = productList.map((product) => product._id);
+    let productStocks = await ProductStock.find()
+      .where("product")
+      .in(productIds)
+      .populate("Product");
+    res.json(productStocks);
   } catch (err) {
     console.error(err.message);
     if (err.kind == "ObjectId") {
