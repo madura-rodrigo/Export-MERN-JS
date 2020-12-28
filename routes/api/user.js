@@ -7,10 +7,10 @@ const config = require("config");
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 
-const { User, Seller } = require("../../models/User");
+const { User } = require("../../models/User");
 
-// @route POST api/profile/seller
-// @desc Register as a new seller user
+// @route POST api/profile
+// @desc Register as a new user as default buyer
 // @access Public
 router.post(
   "/",
@@ -21,8 +21,6 @@ router.post(
     check("country", "Country is required").not().isEmpty(),
     check("area", "Area is required").not().isEmpty(),
     check("address", "Adress is required.").not().isEmpty(),
-    check("categoryId", "Category is required.").not().isEmpty(),
-    check("companyName", "Company is required.").not().isEmpty(),
     check("phone", "Phone number is required").not().isEmpty(),
     check("postalCode", "Postal code is required").not().isEmpty(),
     check("password", "Need password with 6 or more characters.").isLength({
@@ -36,36 +34,34 @@ router.post(
     }
 
     try {
-      const sellerData = {};
-      sellerData.firstName = req.body.firstName;
-      sellerData.lastName = req.body.lastName;
-      sellerData.email = req.body.email;
-      sellerData.country = req.body.country;
-      sellerData.area = req.body.area;
-      sellerData.address = req.body.address;
-      sellerData.phone = req.body.phone;
-      sellerData.postalCode = req.body.postalCode;
-      sellerData.password = req.body.password;
-      sellerData.companyName = req.body.companyName;
-      sellerData.category = req.body.categoryId;
+      const userData = {};
+      userData.firstName = req.body.firstName;
+      userData.lastName = req.body.lastName;
+      userData.email = req.body.email;
+      userData.country = req.body.country;
+      userData.area = req.body.area;
+      userData.address = req.body.address;
+      userData.phone = req.body.phone;
+      userData.postalCode = req.body.postalCode;
+      userData.password = req.body.password;
 
       //Check user in DB
 
-      let user = await User.findOne({ email: sellerData.email });
+      let user = await User.findOne({ email: userData.email });
       //Response error
       if (user) {
         return res.status(400).json({ errors: [{ msg: "User exists" }] });
       }
 
-      const avatar = gravatar.url(sellerData.email, {
+      const avatar = gravatar.url(userData.email, {
         s: "200",
         r: "pg",
         d: "mm",
       });
-      sellerData.avatar = avatar;
+      userData.avatar = avatar;
 
       //Make new user
-      user = new Seller(sellerData);
+      user = new User(userData);
 
       //Encrypt password
       const salt = await bcrypt.genSalt(10);
@@ -96,12 +92,12 @@ router.post(
   }
 );
 
-// @route GET api/profile/seller/me
+// @route GET api/profile/me
 // @desc get current user profile
 // @access Public
 router.get("/me", auth, async (req, res) => {
   try {
-    const user = await Seller.findById(req.user.id);
+    const user = await User.findById(req.user.id);
     if (!user)
       return res.status(400).json({ msg: "There is no profile for this id" });
     res.json(user);
@@ -114,7 +110,7 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
-// @route PUT api/profile/seller/me
+// @route PUT api/profile/me
 // @desc update current user profile
 // @access Public
 router.put(
@@ -126,7 +122,6 @@ router.put(
     check("country", "Country is required").not().isEmpty(),
     check("area", "Area is required").not().isEmpty(),
     check("address", "Adress is required.").not().isEmpty(),
-    check("companyName", "Company is required.").not().isEmpty(),
     check("phone", "Phone number is required").not().isEmpty(),
     check("postalCode", "Postal code is required").not().isEmpty(),
   ],
@@ -136,7 +131,7 @@ router.put(
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-      let user = await Seller.findById(req.user.id);
+      let user = await User.findById(req.user.id);
       if (!user)
         return res.status(400).json({ msg: "There is no profile for this id" });
 
@@ -150,11 +145,9 @@ router.put(
       sellerData.phone = req.body.phone;
       sellerData.postalCode = req.body.postalCode;
       sellerData.password = user.password;
-      sellerData.companyName = req.body.companyName;
-      sellerData.category = user.category;
 
       //Update category
-      user = await Seller.findOneAndUpdate(
+      user = await User.findOneAndUpdate(
         { _id: user.id },
         {
           $set: sellerData,

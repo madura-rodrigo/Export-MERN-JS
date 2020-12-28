@@ -71,11 +71,4 @@ const SellerSchema = new Schema({
 
 const Seller = User.discriminator("Seller", SellerSchema);
 
-const BuyerSchema = new Schema({
-  session: {
-    type: Object,
-  },
-});
-const Buyer = User.discriminator("Buyer", BuyerSchema);
-
-module.exports = { Seller, Buyer };
+module.exports = { User, Seller };

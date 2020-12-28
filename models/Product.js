@@ -6,6 +6,7 @@ const ProductSchema = new Schema({
   seller: {
     type: Schema.Types.ObjectId,
     ref: "Seller",
+    required: true,
   },
   name: {
     type: String,
@@ -15,13 +16,14 @@ const ProductSchema = new Schema({
     type: String,
     required: true,
   },
-  avatar: {
+  imageUrl: {
     type: String,
     required: true,
   },
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
+    required: true,
   },
   review: [
     {
