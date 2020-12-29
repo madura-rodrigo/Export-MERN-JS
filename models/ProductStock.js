@@ -25,9 +25,12 @@ const ProductStockSchema = new Schema({
     required: true,
   },
   retailMinAmount: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
 
-module.exports = Product = mongoose.model("ProductStock", ProductStockSchema);
+module.exports = ProductStock = mongoose.model(
+  "ProductStock",
+  ProductStockSchema
+);

@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const gravatar = require("gravatar");
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
-
 const ProductStock = require("../../models/ProductStock");
 const Product = require("../../models/Product");
-const { Router } = require("express");
 
 // @route POST api/product-stocks
 // @desc Test
@@ -14,18 +11,21 @@ const { Router } = require("express");
 router.post(
   "/",
   [
-    auth,
+    auth("Seller"),
     [
       check(
         "avilableUnits",
-        "Avialable units either be zero or positive number"
-      ).isInt(),
+        "Avilable units either be zero or positive number"
+      ).isInt({ min: 0 }),
       check("measuringUnit", "Unit measure is required").not().isEmpty(),
-      check("unitPrice", "Unit price is required").isFloat(),
-      check("retailUnitPrice", "Retail unit price is required").isFloat(),
-      check("retailMinAmount", "Minimum amount for retail price is required.")
-        .not()
-        .isEmpty(),
+      check("unitPrice", "Unit price is required").isFloat({ min: 0 }),
+      check("retailUnitPrice", "Retail unit price is required").isFloat({
+        min: 0,
+      }),
+      check(
+        "retailMinAmount",
+        "Minimum amount for retail price is required."
+      ).isFloat({ min: 0 }),
     ],
   ],
   async (req, res) => {
@@ -56,7 +56,7 @@ router.post(
         productStockClientData.retailMinAmount = retailMinAmount;
 
       //Check user in DB
-      if (productStockClientData.id) {
+      if (productStockClientData.product) {
         let product = await Product.findById(productStockClientData.product);
         if (product) {
           let productStock = await ProductStock.findById(
@@ -79,9 +79,11 @@ router.post(
             return res.json(productStock);
           } else {
             //Make new ProductStock
+            if (avilableUnits)
+              productStockClientData.avilableUnits = avilableUnits;
             productStock = new ProductStock(productStockClientData);
             productStock.save();
-            return res.send(product);
+            return res.send(productStock);
           }
         } else {
           return res
@@ -99,7 +101,7 @@ router.post(
 // @route GET api/product-stocks
 // @desc get category by id
 // @access Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth(), async (req, res) => {
   try {
     const productStock = await ProductStock.findOne({
       product: req.params.id,
@@ -121,7 +123,7 @@ router.get("/:id", auth, async (req, res) => {
 // @route GET api/product-stocks/category/id
 // @desc get product stocks by category
 // @access Private
-router.get("/category/:id", auth, async (req, res) => {
+router.get("/category/:id", auth(), async (req, res) => {
   try {
     const productList = await Product.find({ category: req.params.id });
     if (!productList || productList.isEmpty())

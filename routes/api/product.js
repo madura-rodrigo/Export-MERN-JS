@@ -13,7 +13,7 @@ const { Router } = require("express");
 router.post(
   "/",
   [
-    auth,
+    auth("Seller"),
     [
       check("name", "Product name is required").not().isEmpty(),
       check("description", "Product description is required").not().isEmpty(),
@@ -79,7 +79,7 @@ router.post(
 // @route GET api/product/id
 // @desc get category by id
 // @access Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth(), async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product)
@@ -97,7 +97,7 @@ router.get("/:id", auth, async (req, res) => {
 // @route GET api/product/search
 // @desc search category
 // @access Private
-router.get("/search/:search", auth, async (req, res) => {
+router.get("/search/:search", auth(), async (req, res) => {
   try {
     const product = await Product.find({
       $or: [

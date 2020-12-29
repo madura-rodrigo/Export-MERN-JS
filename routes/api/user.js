@@ -73,6 +73,7 @@ router.post(
       const payload = {
         user: {
           id: user.id,
+          role: user.users,
         },
       };
 
@@ -95,7 +96,7 @@ router.post(
 // @route GET api/profile/me
 // @desc get current user profile
 // @access Public
-router.get("/me", auth, async (req, res) => {
+router.get("/me", auth(), async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user)
@@ -115,7 +116,7 @@ router.get("/me", auth, async (req, res) => {
 // @access Public
 router.put(
   "/me",
-  auth,
+  auth(),
   [
     check("firstName", "First name is required").not().isEmpty(),
     check("lastName", "Last name is required").not().isEmpty(),
@@ -135,22 +136,22 @@ router.put(
       if (!user)
         return res.status(400).json({ msg: "There is no profile for this id" });
 
-      const sellerData = {};
-      sellerData.firstName = req.body.firstName;
-      sellerData.lastName = req.body.lastName;
-      sellerData.email = user.email;
-      sellerData.country = req.body.country;
-      sellerData.area = req.body.area;
-      sellerData.address = req.body.address;
-      sellerData.phone = req.body.phone;
-      sellerData.postalCode = req.body.postalCode;
-      sellerData.password = user.password;
+      const userData = {};
+      userData.firstName = req.body.firstName;
+      userData.lastName = req.body.lastName;
+      userData.email = user.email;
+      userData.country = req.body.country;
+      userData.area = req.body.area;
+      userData.address = req.body.address;
+      userData.phone = req.body.phone;
+      userData.postalCode = req.body.postalCode;
+      userData.password = user.password;
 
       //Update category
       user = await User.findOneAndUpdate(
         { _id: user.id },
         {
-          $set: sellerData,
+          $set: userData,
         },
         {
           new: true,

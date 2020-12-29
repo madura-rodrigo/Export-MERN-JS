@@ -18,7 +18,7 @@ const ProductSalesHistorySchema = new Schema({
   },
 });
 
-module.exports = Product = mongoose.model(
+module.exports = ProductSalesHistory = mongoose.model(
   "ProductSalesHistory",
   ProductSalesHistorySchema
 );

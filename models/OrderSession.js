@@ -25,4 +25,7 @@ const OrderSessionSchema = new Schema({
   },
 });
 
-module.exports = Product = mongoose.model("OrderSession", OrderSessionSchema);
+module.exports = OrderSession = mongoose.model(
+  "OrderSession",
+  OrderSessionSchema
+);

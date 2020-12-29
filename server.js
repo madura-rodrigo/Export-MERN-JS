@@ -15,6 +15,8 @@ app.use("/api/profile", require("./routes/api/user"));
 
 app.use("/api/profile/seller", require("./routes/api/seller"));
 
+app.use("/api/category", require("./routes/api/category"));
+
 app.use("/api/product", require("./routes/api/product"));
 
 app.use("/api/product-stocks", require("./routes/api/productStock"));

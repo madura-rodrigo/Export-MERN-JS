@@ -77,6 +77,7 @@ router.post(
       const payload = {
         user: {
           id: user.id,
+          role: user.users,
         },
       };
 
@@ -99,7 +100,7 @@ router.post(
 // @route GET api/profile/seller/me
 // @desc get current user profile
 // @access Public
-router.get("/me", auth, async (req, res) => {
+router.get("/me", auth("Seller"), async (req, res) => {
   try {
     const user = await Seller.findById(req.user.id);
     if (!user)
@@ -119,7 +120,7 @@ router.get("/me", auth, async (req, res) => {
 // @access Public
 router.put(
   "/me",
-  auth,
+  auth("Seller"),
   [
     check("firstName", "First name is required").not().isEmpty(),
     check("lastName", "Last name is required").not().isEmpty(),

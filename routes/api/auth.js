@@ -6,14 +6,14 @@ const config = require("config");
 const bcrypt = require("bcryptjs");
 const { check, validationResult } = require("express-validator");
 
-const { Seller } = require("../../models/User");
+const { User } = require("../../models/User");
 
 // @route GET api/auth
 // @desc Test
 // @access Public
-router.get("/", auth, async (req, res) => {
+router.get("/", auth("Seller"), async (req, res) => {
   try {
-    const user = await Seller.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user.id).select("-password");
     res.json(user);
   } catch (err) {
     console.error(err.message);
@@ -41,7 +41,7 @@ router.post(
 
       //Check user in DB
 
-      let user = await Seller.findOne({ email });
+      let user = await User.findOne({ email });
       //Response error
       if (!user) {
         return res
@@ -59,6 +59,7 @@ router.post(
       const payload = {
         user: {
           id: user.id,
+          role: user.users,
         },
       };
 

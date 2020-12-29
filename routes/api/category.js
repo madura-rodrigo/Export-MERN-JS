@@ -14,7 +14,7 @@ const { Router } = require("express");
 router.post(
   "/",
   [
-    auth,
+    auth(),
     [
       check("name", "Category name is required").not().isEmpty(),
       check("description", "Category description is required").not().isEmpty(),
@@ -74,7 +74,7 @@ router.post(
 // @route GET api/category/id
 // @desc get category by id
 // @access Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth(), async (req, res) => {
   try {
     const category = await Category.findById(req.params.id).select(
       "id name description iconUrl"
@@ -94,7 +94,7 @@ router.get("/:id", auth, async (req, res) => {
 // @route GET api/category/search
 // @desc search category
 // @access Private
-router.get("/search/:search", auth, async (req, res) => {
+router.get("/search/:search", auth(), async (req, res) => {
   try {
     const category = await Category.find({
       $or: [
