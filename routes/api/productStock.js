@@ -82,7 +82,7 @@ router.post(
             if (avilableUnits)
               productStockClientData.avilableUnits = avilableUnits;
             productStock = new ProductStock(productStockClientData);
-            productStock.save();
+            await productStock.save();
             return res.send(productStock);
           }
         } else {
@@ -99,18 +99,18 @@ router.post(
 );
 
 // @route GET api/product-stocks
-// @desc get category by id
+// @desc get stock by product id
 // @access Private
 router.get("/:id", auth(), async (req, res) => {
   try {
-    const productStock = await ProductStock.findOne({
+    const stock = await ProductStock.findOne({
       product: req.params.id,
-    }).populate("Product");
-    if (!productStock)
+    }).populate("product");
+    if (!stock)
       return res
         .status(400)
         .json({ msg: "There is no productStock for this product" });
-    res.json(productStock);
+    res.json(stock);
   } catch (err) {
     console.error(err.message);
     if (err.kind == "ObjectId") {
@@ -126,7 +126,7 @@ router.get("/:id", auth(), async (req, res) => {
 router.get("/category/:id", auth(), async (req, res) => {
   try {
     const productList = await Product.find({ category: req.params.id });
-    if (!productList || productList.isEmpty())
+    if (!productList || productList.isEmpty)
       return res
         .status(400)
         .json({ msg: "There are no products for this category." });
@@ -134,7 +134,7 @@ router.get("/category/:id", auth(), async (req, res) => {
     let productStocks = await ProductStock.find()
       .where("product")
       .in(productIds)
-      .populate("Product");
+      .populate("product");
     res.json(productStocks);
   } catch (err) {
     console.error(err.message);

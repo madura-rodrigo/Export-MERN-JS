@@ -42,20 +42,17 @@ router.post(
 
       //Check user in DB
       if (productClientData.id) {
-        let product = await Product.findById(productClientData.id);
-        if (product) {
-          //Update product
-          product = await Product.findOneAndUpdate(
-            { _id: productClientData.id },
-            {
-              $set: productClientData,
-            },
-            {
-              new: true,
-            }
-          );
-          return res.json(product);
-        }
+        //Update product
+        product = await Product.findOneAndUpdate(
+          { _id: productClientData.id },
+          {
+            $set: productClientData,
+          },
+          {
+            new: true,
+          }
+        );
+        return res.json(product);
       }
 
       const avatar = gravatar.url(name, {
@@ -67,7 +64,7 @@ router.post(
 
       //Make new category
       product = new Product(productClientData);
-      product.save();
+      await product.save();
       return res.send(product);
     } catch (err) {
       console.error(err.message);
@@ -114,6 +111,113 @@ router.get("/search/:search", auth(), async (req, res) => {
       return res.status(400).json({ msg: "There is no product for this id" });
     }
     res.status(500).send("Server error");
+  }
+});
+
+// @route PUT api/products/{:productid}/likes
+// @desc Add likes to the product. Only non sellers can use this API
+// @access Private
+router.put("/:productid/likes", auth(), async (req, res) => {
+  try {
+    if (req.user.role == "Seller")
+      return res
+        .status(400)
+        .json({ msg: "Sellers cannot like or dislike for products." });
+
+    let product = await Product.findById(req.params.productid);
+    if (!product.likes.likedUsers.includes(req.user.id)) {
+      product.likes.likedCount = product.likes.likedCount + 1;
+      product.likes.likedUsers.push(req.user.id);
+      await product.save();
+      return res.send(product.likes);
+    } else {
+      return res.status(400).json({ msg: "User already liked." });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route DELELTE api/products/{:productid}/likes
+// @desc Delete likes to the product. Only non sellers can use this API
+// @access Private
+router.delete("/:productid/likes", auth(), async (req, res) => {
+  try {
+    if (req.user.role == "Seller")
+      return res
+        .status(400)
+        .json({ msg: "Sellers cannot like or dislike for products." });
+
+    let product = await Product.findById(req.params.productid);
+
+    if (product.likes.likedUsers.includes(req.user.id)) {
+      product.likes.likedCount = product.likes.likedCount - 1;
+      product.likes.likedUsers = product.likes.likedUsers.filter(
+        (item) => item != req.user.id
+      );
+    }
+    await product.save();
+
+    return res.send(product.likes);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route PUT api/products/{:productid}/reviews
+// @desc Add review to the product. Only non sellers can use this API
+// @access Private
+router.put(
+  "/:productid/reviews",
+  [auth(), [check("rate", "Rating is required.").isInt({ min: 1, max: 5 })]],
+  async (req, res) => {
+    try {
+      if (req.user.role == "Seller")
+        return res.status(400).json({ msg: "Sellers cannot review products." });
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+      let product = await Product.findById(req.params.productid);
+      const { rate, comment } = req.body;
+      const reviewer = req.user.id;
+      const newReview = { reviewer, rate, comment };
+      product.review.unshift(newReview);
+      await product.save();
+      return res.send(product.review);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// @route DELELTE api/products/{:productid}/likes
+// @desc Delete likes to the product. Only non sellers can use this API
+// @access Private
+router.delete("/:productid/reviews/:id", auth(), async (req, res) => {
+  try {
+    if (req.user.role == "Seller")
+      return res
+        .status(400)
+        .json({ msg: "Sellers cannot delete products reviews." });
+
+    let product = await Product.findById(req.params.productid);
+
+    product.review = product.review.filter(
+      (item) => item.id != req.params.id || item.reviewer != req.user.id
+    );
+
+    await product.save();
+
+    return res.send(product.review);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 });
 

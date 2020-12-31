@@ -62,7 +62,7 @@ router.post(
 
       //Make new category
       category = new Category(categoryFields);
-      category.save();
+      await category.save();
       return res.send(category);
     } catch (err) {
       console.error(err.message);

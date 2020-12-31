@@ -25,10 +25,27 @@ const ProductSchema = new Schema({
     ref: "Category",
     required: true,
   },
+  likes: {
+    likedCount: {
+      type: Number,
+      default: 0,
+    },
+    likedUsers: [String],
+  },
   review: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Review",
+      reviewer: {
+        type: String,
+        required: true,
+      },
+      rate: {
+        type: Number,
+        default: 0,
+        required: true,
+      },
+      comment: {
+        type: String,
+      },
     },
   ],
 });
