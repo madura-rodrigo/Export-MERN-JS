@@ -730,6 +730,7 @@ img {
     padding-top: 50px;
   }
 }
+
 .main-content-wrapper .cart-table-area {
   position: relative;
   z-index: 1;
@@ -985,6 +986,12 @@ img {
   width: calc(95% - 320px);
   max-width: calc(95% - 320px);
 }
+
+.main-content-wrapper .single-product-area .link a:hover,
+.main-content-wrapper .single-product-area .link a:focus {
+  color: #fbb710;
+}
+
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .main-content-wrapper .single-product-area {
     -webkit-box-flex: 0;

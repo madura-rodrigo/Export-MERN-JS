@@ -2,25 +2,28 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer class="footer_area clearfix">
-      <div class="container">
-        <div class="row align-items-center">
+    <footer className="footer_area clearfix">
+      <div className="container">
+        <div className="row align-items-center">
           {/* Single Widget Area */}
-          <div class="col-12 col-lg-4">
-            <div class="single_widget_area">
+          <div className="col-12 col-lg-4">
+            <div className="single_widget_area">
               {/* Logo */}
-              <div class="footer-logo mr-50">
+              <div className="footer-logo mr-50">
                 <a href="index.html">
-                  <img src="img/core-img/logo2.png" alt="" />
+                  <img
+                    src={require("../../img/core-img/logo2.png").default}
+                    alt=""
+                  />
                 </a>
               </div>
               {/* Copywrite Text */}
-              <p class="copywrite">
+              <p className="copywrite">
                 {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
                 Copyright &copy;
                 <script>document.write(new Date().getFullYear());</script> All
                 rights reserved | This template is made with{" "}
-                <i class="fa fa-heart-o" aria-hidden="true"></i> by{" "}
+                <i className="fa fa-heart-o" aria-hidden="true"></i> by{" "}
                 <a href="https://colorlib.com" target="_blank">
                   Colorlib
                 </a>{" "}
@@ -33,13 +36,13 @@ const Footer = () => {
             </div>
           </div>
           {/* Single Widget Area */}
-          <div class="col-12 col-lg-8">
-            <div class="single_widget_area">
+          <div className="col-12 col-lg-8">
+            <div className="single_widget_area">
               {/* Footer Menu */}
-              <div class="footer_menu">
-                <nav class="navbar navbar-expand-lg justify-content-end">
+              <div className="footer_menu">
+                <nav className="navbar navbar-expand-lg justify-content-end">
                   <button
-                    class="navbar-toggler"
+                    className="navbar-toggler"
                     type="button"
                     data-toggle="collapse"
                     data-target="#footerNavContent"
@@ -47,32 +50,35 @@ const Footer = () => {
                     aria-expanded="false"
                     aria-label="Toggle navigation"
                   >
-                    <i class="fa fa-bars"></i>
+                    <i className="fa fa-bars"></i>
                   </button>
-                  <div class="collapse navbar-collapse" id="footerNavContent">
-                    <ul class="navbar-nav ml-auto">
-                      <li class="nav-item active">
-                        <a class="nav-link" href="index.html">
+                  <div
+                    className="collapse navbar-collapse"
+                    id="footerNavContent"
+                  >
+                    <ul className="navbar-nav ml-auto">
+                      <li className="nav-item active">
+                        <a className="nav-link" href="index.html">
                           Home
                         </a>
                       </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="shop.html">
+                      <li className="nav-item">
+                        <a className="nav-link" href="shop.html">
                           Shop
                         </a>
                       </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="product-details.html">
+                      <li className="nav-item">
+                        <a className="nav-link" href="product-details.html">
                           Product
                         </a>
                       </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="cart.html">
+                      <li className="nav-item">
+                        <a className="nav-link" href="cart.html">
                           Cart
                         </a>
                       </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="checkout.html">
+                      <li className="nav-item">
+                        <a className="nav-link" href="checkout.html">
                           Checkout
                         </a>
                       </li>

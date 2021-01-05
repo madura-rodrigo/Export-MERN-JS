@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
 
-const Navbar = () => {
+const Navbar = (props) => {
+  const userLogged = props.store.user.isAuthenticated;
   return (
     <nav className="amado-nav">
       <ul>
@@ -21,11 +23,16 @@ const Navbar = () => {
           <Link to="checkout">Checkout</Link>
         </li>
         <li>
-          <Link to="/login">Login</Link>
+          {!userLogged && <Link to="/login">Login</Link>}
+          {userLogged && (
+            <Link to="/login" onClick={props.store.logout}>
+              Logout
+            </Link>
+          )}
         </li>
       </ul>
     </nav>
   );
 };
 
-export default Navbar;
+export default observer(Navbar);

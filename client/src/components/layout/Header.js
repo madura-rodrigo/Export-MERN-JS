@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 
-const Header = () => {
+const Header = (props) => {
   return (
     <Fragment>
       {/* Mobile Nav (max width 767px) */}
@@ -11,7 +11,7 @@ const Header = () => {
         {/* Navbar Brand */}
         <div className="amado-navbar-brand">
           <a href="index.html">
-            <img src="img/core-img/logo.png" alt="" />
+            <img src={require("../../img/core-img/logo.png").default} alt="" />
           </a>
         </div>
         {/* Navbar Toggler */}
@@ -33,7 +33,7 @@ const Header = () => {
             />
           </Link>
         </div>
-        <Navbar />
+        <Navbar store={props.store} />
         {/*Button Group*/}
         <div className="amado-btn-group mt-30 mb-100">
           <a href="/some/valid/uri" className="btn amado-btn mb-15">
