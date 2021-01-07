@@ -1,16 +1,19 @@
 import React from "react";
 import { Alert } from "react-bootstrap";
 import { observer } from "mobx-react";
+import { Fragment } from "react";
 
-function AlertComp(props) {
-  const err = props.store.user.error;
-  if (err.type) {
+const AlertComponent = (props) =>
+  props.store.user.errors !== null &&
+  props.store.user.errors.length > 0 &&
+  props.store.user.errors.map((alert) => {
+    setTimeout(() => props.store.clearError(alert.id), 5000);
+
     return (
-      <div>
-        <Alert variant={err.type} dismissible></Alert>
-      </div>
+      <Fragment>
+        <Alert variant={alert.type}>{alert.msg}</Alert>
+      </Fragment>
     );
-  }
-}
+  });
 
-export default observer(AlertComp);
+export default observer(AlertComponent);

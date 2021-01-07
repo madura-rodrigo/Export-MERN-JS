@@ -2,16 +2,16 @@ import "./App.css";
 import React from "react";
 import { Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Store from "./store";
+import UserStore from "./stores/store";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Categories from "./components/layout/Categories";
 import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import Suscribe from "./components/layout/Suscribe";
-import AlertComp from "./components/layout/Alert";
+import AlertComponent from "./components/layout/Alert";
 
-const userStore = new Store();
+const userStore = new UserStore();
 
 function App() {
   return (
@@ -19,14 +19,18 @@ function App() {
       <div className="main-content-wrapper d-flex clearfix">
         <Router>
           <Header store={userStore} />
-          <Switch>
-            <AlertComp store={userStore}></AlertComp>
-            <Route exact path="/" component={Categories} />
-            <Route path="/register" component={Register} />
-            <Route path="/login">
-              <Login store={userStore} />
-            </Route>
-          </Switch>
+          <Route exact path="/" component={Categories} />
+          <div className="single-product-area section-padding-100 clearfix container-fluid">
+            <AlertComponent store={userStore} />
+            <Switch>
+              <Route path="/register">
+                <Register store={userStore} />
+              </Route>
+              <Route path="/login">
+                <Login store={userStore} />
+              </Route>
+            </Switch>
+          </div>
         </Router>
       </div>
       <Suscribe />

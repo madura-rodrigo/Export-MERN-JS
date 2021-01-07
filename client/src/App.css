@@ -187,6 +187,11 @@ img {
   padding-bottom: 100px;
 }
 
+.section-padding-50-0 {
+  padding-top: 50px;
+  padding-bottom: 0;
+}
+
 /* Section Heading */
 .section-heading {
   margin-bottom: 50px;
@@ -204,6 +209,7 @@ img {
 }
 
 /* Miscellaneous */
+
 .bg-img {
   background-position: center center;
   background-size: cover;
@@ -1051,6 +1057,7 @@ img {
   z-index: 1;
   margin-bottom: 170px;
 }
+
 .main-content-wrapper
   .single-product-area
   .single_product_thumb
