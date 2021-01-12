@@ -5,13 +5,17 @@ import "react-bootstrap-country-select/dist/react-bootstrap-country-select.css";
 import "react-phone-input-2/lib/bootstrap.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import theme from "./components/theme";
+import { ThemeProvider } from "@material-ui/core/styles";
 //Redux
 //import { Provider } from "react-redux";
 //import store from "./store";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
