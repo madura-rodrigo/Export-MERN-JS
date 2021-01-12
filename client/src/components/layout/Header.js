@@ -1,9 +1,13 @@
 import React from "react";
+import { useContext } from "react";
+import { StoreContext } from "../../stores/StoreContextProvider";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { observer } from "mobx-react";
 import Navbar from "./Navbar";
 
-const Header = (props) => {
+const Header = () => {
+  const rootStore = useContext(StoreContext);
   return (
     <Fragment>
       {/* Mobile Nav (max width 767px) */}
@@ -33,7 +37,7 @@ const Header = (props) => {
             />
           </Link>
         </div>
-        <Navbar store={props.store} />
+        <Navbar store={rootStore.userStore} />
         {/*Button Group*/}
         <div className="amado-btn-group mt-30 mb-100">
           <a href="/some/valid/uri" className="btn amado-btn mb-15">
@@ -84,4 +88,4 @@ const Header = (props) => {
   );
 };
 
-export default Header;
+export default observer(Header);

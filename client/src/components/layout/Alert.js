@@ -1,19 +1,24 @@
 import React from "react";
+import { useContext } from "react";
+import { StoreContext } from "../../stores/StoreContextProvider";
 import { Alert } from "react-bootstrap";
 import { observer } from "mobx-react";
 import { Fragment } from "react";
 
-const AlertComponent = (props) =>
-  props.store.user.errors !== null &&
-  props.store.user.errors.length > 0 &&
-  props.store.user.errors.map((alert) => {
-    setTimeout(() => props.store.clearError(alert.id), 5000);
+const AlertComponent = () => {
+  const rootStore = useContext(StoreContext);
+  let returnValue = null;
+  rootStore.alertStore.alerts !== null &&
+    rootStore.alertStore.alerts.length > 0 &&
+    rootStore.alertStore.alerts.map((alert) => {
+      setTimeout(() => rootStore.alertStore.clearError(alert.id), 5000);
 
-    return (
-      <Fragment>
-        <Alert variant={alert.type}>{alert.msg}</Alert>
-      </Fragment>
-    );
-  });
-
+      return (returnValue = (
+        <Fragment>
+          <Alert variant={alert.type}>{alert.msg}</Alert>
+        </Fragment>
+      ));
+    });
+  return returnValue;
+};
 export default observer(AlertComponent);

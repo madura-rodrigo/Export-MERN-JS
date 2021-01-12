@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react";
 
-const Navbar = (props) => {
-  const userLogged = props.store.user.isAuthenticated;
+const Navbar = ({ store }) => {
+  const userLogged = store.user.isAuthenticated;
   return (
     <nav className="amado-nav">
       <ul>
@@ -25,7 +25,7 @@ const Navbar = (props) => {
         <li>
           {!userLogged && <Link to="/login">Login</Link>}
           {userLogged && (
-            <Link to="/login" onClick={props.store.logout}>
+            <Link to="/login" onClick={store.logout}>
               Logout
             </Link>
           )}

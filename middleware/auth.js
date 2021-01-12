@@ -19,6 +19,7 @@ module.exports = auth = function (...permittedRoles) {
         !permittedRoles.includes(decoded.user.role)
       )
         throw new Error();
+
       req.user = decoded.user;
       next();
     } catch (err) {

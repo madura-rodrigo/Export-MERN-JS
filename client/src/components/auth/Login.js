@@ -1,10 +1,13 @@
 import React from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useState } from "react";
+import { useContext } from "react";
+import { StoreContext } from "../../stores/StoreContextProvider";
 import { Link, Redirect } from "react-router-dom";
 import { observer } from "mobx-react";
 
-const Login = (props) => {
+const Login = () => {
+  const rootStore = useContext(StoreContext);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,10 +25,10 @@ const Login = (props) => {
       email,
       password,
     };
-    props.store.authUser(user);
+    rootStore.userStore.authUser(user);
   };
 
-  if (props.store.user.isAuthenticated === true) {
+  if (rootStore.userStore.user.isAuthenticated === true) {
     return <Redirect to="/" />;
   }
 

@@ -4,10 +4,10 @@ const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("config");
-const auth = require("../../middleware/auth");
+const auth = require("../../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 
-const { User, Seller } = require("../../models/User");
+const { User, Seller } = require("../../../models/User");
 
 // @route POST api/profile/seller
 // @desc Register as a new seller user
@@ -15,19 +15,19 @@ const { User, Seller } = require("../../models/User");
 router.post(
   "/",
   [
-    check("firstName", "First name is required").not().isEmpty(),
-    check("lastName", "Last name is required").not().isEmpty(),
-    check("email", "Please enter valid email.").isEmail(),
-    check("country", "Country is required").not().isEmpty(),
+    //check("firstName", "First name is required").not().isEmpty(),
+    //check("lastName", "Last name is required").not().isEmpty(),
+    //check("email", "Please enter valid email.").isEmail(),
+    //check("country", "Country is required").not().isEmpty(),
     check("area", "Area is required").not().isEmpty(),
     check("address", "Adress is required.").not().isEmpty(),
     check("categoryId", "Category is required.").not().isEmpty(),
     check("companyName", "Company is required.").not().isEmpty(),
     check("phone", "Phone number is required").not().isEmpty(),
     check("postalCode", "Postal code is required").not().isEmpty(),
-    check("password", "Need password with 6 or more characters.").isLength({
-      min: 6,
-    }),
+    //check("password", "Need password with 6 or more characters.").isLength({
+    //  min: 6,
+    //}),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -53,19 +53,30 @@ router.post(
 
       let user = await User.findOne({ email: sellerData.email });
       //Response error
-      if (user) {
-        return res.status(400).json({ errors: [{ msg: "User exists" }] });
+      if (!user) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "User  does not exists" }] });
       }
 
-      const avatar = gravatar.url(sellerData.email, {
-        s: "200",
-        r: "pg",
-        d: "mm",
-      });
-      sellerData.avatar = avatar;
+      // const avatar = gravatar.url(sellerData.email, {
+      //   s: "200",
+      //   r: "pg",
+      //   d: "mm",
+      // });
+      // sellerData.avatar = avatar;
 
-      //Make new user
-      user = new Seller(sellerData);
+      //Upgrade user as a seller
+      user = await Seller.findOneAndUpdate(
+        { _id: user.id },
+        {
+          $set: sellerData,
+        },
+        {
+          new: true,
+        }
+      ).select("-password");
+      //user = new Seller(sellerData);
 
       //Encrypt password
       const salt = await bcrypt.genSalt(10);
@@ -120,13 +131,11 @@ router.get("/me", auth("Seller"), async (req, res) => {
 // @access Public
 router.put(
   "/me",
-  auth("Seller"),
+  auth(),
   [
-    check("firstName", "First name is required").not().isEmpty(),
-    check("lastName", "Last name is required").not().isEmpty(),
-    check("country", "Country is required").not().isEmpty(),
     check("area", "Area is required").not().isEmpty(),
     check("address", "Adress is required.").not().isEmpty(),
+    check("categoryId", "Category is required.").not().isEmpty(),
     check("companyName", "Company is required.").not().isEmpty(),
     check("phone", "Phone number is required").not().isEmpty(),
     check("postalCode", "Postal code is required").not().isEmpty(),
@@ -137,25 +146,26 @@ router.put(
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-      let user = await Seller.findById(req.user.id);
+      let user = await User.findById(req.user.id);
       if (!user)
         return res.status(400).json({ msg: "There is no profile for this id" });
 
       const sellerData = {};
-      sellerData.firstName = req.body.firstName;
-      sellerData.lastName = req.body.lastName;
+      sellerData.firstName = user.firstName;
+      sellerData.lastName = user.lastName;
       sellerData.email = user.email;
-      sellerData.country = req.body.country;
+      sellerData.country = user.country;
       sellerData.area = req.body.area;
       sellerData.address = req.body.address;
       sellerData.phone = req.body.phone;
       sellerData.postalCode = req.body.postalCode;
       sellerData.password = user.password;
       sellerData.companyName = req.body.companyName;
-      sellerData.category = user.category;
+      sellerData.category = req.body.category;
+      sellerData.users = "Seller";
 
-      //Update category
-      user = await Seller.findOneAndUpdate(
+      //Update to seller
+      user = await User.findOneAndUpdate(
         { _id: user.id },
         {
           $set: sellerData,
@@ -164,6 +174,24 @@ router.put(
           new: true,
         }
       ).select("-password");
+
+      //Reurn jsonwebtoken
+      const payload = {
+        user: {
+          id: user.id,
+          role: user.users,
+        },
+      };
+
+      jwt.sign(
+        payload,
+        config.get("jwtSecretKey"),
+        { expiresIn: 360000 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
       return res.json(user);
     } catch (err) {
       console.error(err.message);
@@ -171,5 +199,7 @@ router.put(
     }
   }
 );
+
+exports.updateSellerProfile = async (req, res) => {};
 
 module.exports = router;

@@ -1,12 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
 import { useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { useContext } from "react";
+import { StoreContext } from "../../stores/StoreContextProvider";
+import { Button, Col, Form } from "react-bootstrap";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import PhoneInput from "react-phone-input-2";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { observer } from "mobx-react";
 
-const Register = (props) => {
+const Register = () => {
+  const rootStore = useContext(StoreContext);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,13 +21,7 @@ const Register = (props) => {
     address: "",
     phone: "",
     postalCode: "",
-    company: "",
-    category: "",
   });
-
-  const [sellerRegistration, setSellerRegistration] = useState(false);
-
-  const [showSellerRegistration, setShowSellerRegistration] = useState(false);
 
   const {
     firstName,
@@ -35,8 +32,6 @@ const Register = (props) => {
     address,
     phone,
     postalCode,
-    company,
-    category,
   } = formData;
 
   const onChange = (e) => {
@@ -45,10 +40,10 @@ const Register = (props) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    //props.store.regiserUser(formData);
+    rootStore.userStore.registerUser(formData);
   };
 
-  if (props.store.user.isAuthenticated === true) {
+  if (rootStore.userStore.user.isAuthenticated === true) {
     return <Redirect to="/" />;
   }
 
@@ -118,14 +113,6 @@ const Register = (props) => {
             value={country}
             valueType="short"
             onChange={(v, e) => {
-              if (v === "LK") {
-                setSellerRegistration(true);
-              } else {
-                setSellerRegistration(false);
-                setShowSellerRegistration(false);
-                setFormData({ ...formData, company: "", category: "" });
-              }
-
               onChange(e);
             }}
           />
@@ -136,6 +123,7 @@ const Register = (props) => {
             className="browser-default custom-select"
             name="area"
             country={country}
+            countryValueType="short"
             value={area}
             onChange={(v, e) => onChange(e)}
           />
@@ -171,51 +159,6 @@ const Register = (props) => {
           />
         </Form.Group>
       </Form.Row>
-      {sellerRegistration && (
-        <Form.Group>
-          <Form.Check
-            type="checkbox"
-            label="I would like to register as a seller"
-            onClick={(e) => {
-              if (e.target.checked) {
-                setShowSellerRegistration(true);
-              } else {
-                setShowSellerRegistration(false);
-                setFormData({ ...formData, company: "", category: "" });
-              }
-            }}
-          />
-        </Form.Group>
-      )}
-      {showSellerRegistration && (
-        <Form.Group>
-          <Form.Label>Company</Form.Label>
-          <Form.Control
-            type="text"
-            name="company"
-            value={company}
-            required
-            onChange={(e) => onChange(e)}
-          />
-        </Form.Group>
-      )}
-      {showSellerRegistration && (
-        <Form.Group>
-          <Form.Label>Category</Form.Label>
-          <Form.Control
-            as="select"
-            name="category"
-            value={category}
-            defaultValue="Choose..."
-            required
-            onChange={(e) => onChange(e)}
-          >
-            <option>Choose...</option>
-            <option>Gems</option>
-            <option>Hand Crafts</option>
-          </Form.Control>
-        </Form.Group>
-      )}
       <div className="section-padding-50-0">
         <Button className="btn amado-btn mb-15" variant="primary" type="submit">
           Register
