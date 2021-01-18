@@ -2,13 +2,40 @@ import React from "react";
 import { useState } from "react";
 import { useContext } from "react";
 import { StoreContext } from "../../stores/StoreContextProvider";
-import { Button, Col, Form } from "react-bootstrap";
-import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import PhoneInput from "react-phone-input-2";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
+import Avatar from "@material-ui/core/Avatar";
+import TextField from "@material-ui/core/TextField";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import { makeStyles } from "@material-ui/core/styles";
+import CountrySelect from "./../CountryRegionSelect";
 import { Redirect } from "react-router-dom";
 import { observer } from "mobx-react";
+import { Fragment } from "react";
+import { Button, FormControl, FormGroup } from "@material-ui/core/";
+import MuiPhoneNumber from "material-ui-phone-number";
+import theme from "../theme";
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(-1),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.primary.main,
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(1),
+  },
+}));
 
 const Register = () => {
+  const classes = useStyles();
   const rootStore = useContext(StoreContext);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -38,6 +65,14 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handlePhoneChange = (value) => {
+    setFormData({ ...formData, ["phone"]: value });
+  };
+
+  const handleCountryChange = (value) => {
+    setFormData({ ...formData, ["country"]: value });
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     rootStore.userStore.registerUser(formData);
@@ -48,123 +83,144 @@ const Register = () => {
   }
 
   return (
-    <Form onSubmit={(e) => onSubmit(e)}>
-      <Form.Group>
-        <Form.Label>First Name</Form.Label>
-        <Form.Control
-          type="text"
-          name="firstName"
-          value={firstName}
-          required
-          onChange={(e) => onChange(e)}
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Last Name</Form.Label>
-        <Form.Control
-          type="text"
-          name="lastName"
-          value={lastName}
-          required
-          onChange={(e) => onChange(e)}
-        />
-      </Form.Group>
-      <Form.Group controlId="exampleForm.ControlInput1">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control
-          type="email"
-          name="email"
-          placeholder="name@example.com"
-          value={email}
-          required
-          onChange={(e) => onChange(e)}
-        />
-        <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
-        </Form.Text>
-      </Form.Group>
-
-      <Form.Group controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
-        <Form.Control
-          type="password"
-          name="password"
-          placeholder="Password"
-          required
-          onChange={(e) => onChange(e)}
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Retype Password</Form.Label>
-        <Form.Control
-          type="password"
-          name="password2"
-          placeholder="Retype Password"
-          required
-          onChange={(e) => onChange(e)}
-        />
-      </Form.Group>
-      <Form.Row>
-        <Form.Group as={Col}>
-          <Form.Label>Country</Form.Label>
-          <CountryDropdown
-            className="browser-default custom-select"
-            name="country"
-            value={country}
-            valueType="short"
-            onChange={(v, e) => {
-              onChange(e);
-            }}
-          />
-        </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>Area</Form.Label>
-          <RegionDropdown
-            className="browser-default custom-select"
-            name="area"
-            country={country}
-            countryValueType="short"
-            value={area}
-            onChange={(v, e) => onChange(e)}
-          />
-        </Form.Group>
-      </Form.Row>
-      <Form.Group>
-        <Form.Label>Address</Form.Label>
-        <Form.Control
-          type="text"
-          name="address"
-          value={address}
-          required
-          onChange={(e) => onChange(e)}
-        />
-      </Form.Group>
-      <Form.Row>
-        <Form.Group as={Col}>
-          <Form.Label>Tel</Form.Label>
-          <PhoneInput
-            inputProps={{ name: "phone", required: true }}
-            value={phone}
-            onChange={(v, c, e) => onChange(e)}
-          />
-        </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>Postal Code</Form.Label>
-          <Form.Control
-            type="text"
-            name="postalCode"
-            value={postalCode}
-            required
-            onChange={(e) => onChange(e)}
-          />
-        </Form.Group>
-      </Form.Row>
-      <div className="section-padding-50-0">
-        <Button className="btn amado-btn mb-15" variant="primary" type="submit">
-          Register
-        </Button>
-      </div>
-    </Form>
+    <Fragment>
+      <CssBaseline />
+      <Container component="main" maxWidth="xl">
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <PersonAddIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Register
+          </Typography>
+          <form
+            className={classes.form}
+            onSubmit={(e) => onSubmit(e)}
+            noValidate
+          >
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="firstName"
+              label="First Name"
+              name="firstName"
+              value={firstName}
+              onChange={(e) => onChange(e)}
+              autoFocus
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              value={lastName}
+              onChange={(e) => onChange(e)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => onChange(e)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              onChange={(e) => onChange(e)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password2"
+              label="Retype Password"
+              type="password"
+              id="password2"
+              onChange={(e) => onChange(e)}
+            />
+            <FormGroup row={true}>
+              <CountrySelect
+                name="country"
+                id="country"
+                value={country}
+                required
+                autoComplete={false}
+                onChange={handleCountryChange}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                id="area"
+                label="Area"
+                name="area"
+                value={area}
+                style={({ width: 300 }, { marginLeft: theme.spacing(8) })}
+                onChange={(e) => onChange(e)}
+              />
+            </FormGroup>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              name="address"
+              label="Address"
+              id="address"
+              fullWidth
+              value={address}
+              onChange={(e) => onChange(e)}
+            />
+            <FormGroup row>
+              <MuiPhoneNumber
+                variant="outlined"
+                label="Phone"
+                margin="normal"
+                name="phone"
+                style={{ width: 300 }}
+                required
+                id="phone"
+                value={phone}
+                onChange={handlePhoneChange}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                name="postalCode"
+                label="postal Code"
+                id="postalCode"
+                style={({ width: 300 }, { marginLeft: theme.spacing(8) })}
+                value={postalCode}
+                onChange={(e) => onChange(e)}
+              />
+            </FormGroup>
+            <FormControl margin="normal">
+              <Button type="submit" variant="contained" color="primary">
+                Register
+              </Button>
+            </FormControl>
+          </form>
+        </div>
+      </Container>
+    </Fragment>
   );
 };
 export default observer(Register);

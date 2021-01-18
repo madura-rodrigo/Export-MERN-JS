@@ -10,13 +10,17 @@ import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import Suscribe from "./components/layout/Suscribe";
 import AlertComponent from "./components/layout/Alert";
+import Dashboard from "./components/layout/Dashboard";
+import PrivateRoute from "./components/routing/PrivateRoute";
+import Profile from "./components/layout/Profile";
 
 function App() {
   return (
     <StoreContextProvider>
-      <Fragment>
-        <div className="main-content-wrapper d-flex clearfix">
-          <Router>
+      <Router>
+        <Fragment>
+          <Dashboard />
+          <div className="main-content-wrapper d-flex clearfix">
             <Header />
             <Route exact path="/" component={Categories} />
             <div className="single-product-area section-padding-100 clearfix container-fluid">
@@ -28,13 +32,14 @@ function App() {
                 <Route path="/login">
                   <Login />
                 </Route>
+                <PrivateRoute path="/profile" component={Profile} />
               </Switch>
             </div>
-          </Router>
-        </div>
-        <Suscribe />
-        <Footer />
-      </Fragment>
+          </div>
+          <Suscribe />
+          <Footer />
+        </Fragment>
+      </Router>
     </StoreContextProvider>
   );
 }

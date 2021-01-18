@@ -4,17 +4,8 @@ import { makeAutoObservable } from "mobx";
 class UserStore {
   user = {
     token: localStorage.getItem("token"),
-    loading: true,
-    user: {
-      firstName: String,
-      lastName: String,
-      email: String,
-      country: String,
-      area: String,
-      address: String,
-      phone: String,
-      postalCode: String,
-    },
+    isAuthenticated: localStorage.getItem("token") ? true : false,
+    user: {},
   };
 
   constructor(rootStore) {
@@ -31,12 +22,11 @@ class UserStore {
       .post("api/auth", body, config)
       .then((response) => {
         localStorage.setItem("token", response.data.token);
-        this.user.loading = false;
         this.user.isAuthenticated = true;
+        this.loadUser();
       })
       .catch((err) => {
         localStorage.setItem("token", null);
-        this.user.loading = true;
         this.user.isAuthenticated = false;
         this.rootStore.alertStore.addError(err.response.data.errors);
       });
@@ -58,8 +48,8 @@ class UserStore {
         .post("api/profile", body, config)
         .then((response) => {
           localStorage.setItem("token", response.data.token);
-          this.user.loading = false;
           this.user.isAuthenticated = true;
+          this.setAuthToken(localStorage.token);
         })
         .catch((err) => {
           if (err.response) {
@@ -67,10 +57,32 @@ class UserStore {
           }
         });
     } catch (err) {
-      this.user.loading = true;
       this.user.isAuthenticated = false;
       this.rootStore.alertStore.addError([{ msg: err.message }]);
     }
+  };
+
+  loadUser = async () => {
+    if (localStorage.token) {
+      this.setAuthToken(localStorage.token);
+    }
+    await axios
+      .get("api/auth")
+      .then((response) => {
+        this.user.user = response.data;
+        console.log(response.data);
+      })
+      .catch((err) => {
+        if (err.response) {
+          this.rootStore.alertStore.addError(err.response.data.errors);
+        }
+      });
+  };
+
+  logout = () => {
+    localStorage.removeItem("token");
+    this.user.isAuthenticated = false;
+    this.setAuthToken(localStorage.token);
   };
 
   setAuthToken = (token) => {
@@ -81,11 +93,14 @@ class UserStore {
     }
   };
 
-  logout = () => {
-    localStorage.setItem("token", null);
-    this.user.loading = true;
-    this.user.isAuthenticated = false;
-  };
+  get fullName() {
+    let fullName = this.user.user.firstName + " " + this.user.user.lastName;
+    return fullName;
+  }
+
+  get avatar() {
+    return this.user.user.avatar;
+  }
 }
 
 export default UserStore;

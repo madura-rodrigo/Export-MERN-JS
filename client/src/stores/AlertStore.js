@@ -14,7 +14,7 @@ class AlertStore {
     errs !== null &&
       errs.length > 0 &&
       errs.map((err) =>
-        this.alerts.push({ id: id, type: "danger", msg: err.msg })
+        this.alerts.push({ id: id, type: "error", msg: err.msg })
       );
   };
 

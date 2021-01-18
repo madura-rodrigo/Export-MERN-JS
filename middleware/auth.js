@@ -8,7 +8,9 @@ module.exports = auth = function (...permittedRoles) {
 
     //If no token
     if (!token) {
-      return res.status(401).json({ msg: "No token, authorization denied" });
+      return res
+        .status(401)
+        .json({ erros: [{ msg: "No token, authorization denied" }] });
     }
 
     //Verify token
@@ -23,7 +25,7 @@ module.exports = auth = function (...permittedRoles) {
       req.user = decoded.user;
       next();
     } catch (err) {
-      res.status(401).json({ msg: "Token is not valid." });
+      res.status(401).json({ errors: [{ msg: "Token is not valid." }] });
     }
   };
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "react-bootstrap-country-select/dist/react-bootstrap-country-select.css";
+//import "react-bootstrap-country-select/dist/react-bootstrap-country-select.css";
 import "react-phone-input-2/lib/bootstrap.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
