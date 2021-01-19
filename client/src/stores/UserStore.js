@@ -5,7 +5,10 @@ class UserStore {
   user = {
     token: localStorage.getItem("token"),
     isAuthenticated: localStorage.getItem("token") ? true : false,
-    user: {},
+    user: {
+      firstName: localStorage.name,
+      avatar: localStorage.avatar,
+    },
   };
 
   constructor(rootStore) {
@@ -70,7 +73,8 @@ class UserStore {
       .get("api/auth")
       .then((response) => {
         this.user.user = response.data;
-        console.log(response.data);
+        localStorage.setItem("name", this.user.user.firstName);
+        localStorage.setItem("avatar", this.user.user.avatar);
       })
       .catch((err) => {
         if (err.response) {
@@ -81,6 +85,8 @@ class UserStore {
 
   logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("name");
+    localStorage.removeItem("avatar");
     this.user.isAuthenticated = false;
     this.setAuthToken(localStorage.token);
   };
@@ -93,9 +99,8 @@ class UserStore {
     }
   };
 
-  get fullName() {
-    let fullName = this.user.user.firstName + " " + this.user.user.lastName;
-    return fullName;
+  get name() {
+    return this.user.user.firstName;
   }
 
   get avatar() {

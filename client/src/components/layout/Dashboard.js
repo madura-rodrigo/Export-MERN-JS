@@ -134,7 +134,7 @@ const Dashboard = () => {
     >
       {userLogged && (
         <MenuItem onClick={handleMenuClose}>
-          <Link to="/profile">{rootStore.userStore.fullName} Profile</Link>
+          <Link to="/profile">{rootStore.userStore.name} Profile</Link>
         </MenuItem>
       )}
       {userLogged && (
@@ -184,7 +184,14 @@ const Dashboard = () => {
           aria-haspopup="true"
           color="inherit"
         >
-          <AccountCircle />
+          {!userLogged && <AccountCircle />}
+          {userLogged && (
+            <Avatar
+              alt={rootStore.userStore.name}
+              className={classes.avatar}
+              src={rootStore.userStore.avatar}
+            />
+          )}
         </IconButton>
         <p>Profile</p>
       </MenuItem>
@@ -243,7 +250,7 @@ const Dashboard = () => {
               {!userLogged && <AccountCircle />}
               {userLogged && (
                 <Avatar
-                  alt={rootStore.userStore.fullName}
+                  alt={rootStore.userStore.name}
                   className={classes.avatar}
                   src={rootStore.userStore.avatar}
                 />
