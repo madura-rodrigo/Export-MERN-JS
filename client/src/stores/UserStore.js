@@ -70,7 +70,26 @@ class UserStore {
       this.setAuthToken(localStorage.token);
     }
     await axios
-      .get("api/auth")
+      .get("api/profile/me")
+      .then((response) => {
+        this.user.user = response.data;
+        localStorage.setItem("name", this.user.user.firstName);
+        localStorage.setItem("avatar", this.user.user.avatar);
+      })
+      .catch((err) => {
+        if (err.response) {
+          this.rootStore.alertStore.addError(err.response.data.errors);
+        }
+      });
+  };
+
+  updateUser = async () => {
+    const config = {
+      headers: { "Content-Type": "application/json" },
+    };
+    const body = JSON.stringify(this.user.user);
+    await axios
+      .put("api/profile/me", body, config)
       .then((response) => {
         this.user.user = response.data;
         localStorage.setItem("name", this.user.user.firstName);
