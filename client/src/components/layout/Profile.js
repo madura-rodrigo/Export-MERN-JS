@@ -60,7 +60,7 @@ const Profile = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    rootStore.userStore.updateUser();
+    rootStore.userStore.updateUser(user);
   };
 
   return (

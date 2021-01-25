@@ -83,10 +83,11 @@ class UserStore {
       });
   };
 
-  updateUser = async () => {
+  updateUser = async (e) => {
     const config = {
       headers: { "Content-Type": "application/json" },
     };
+    this.user.user = e;
     const body = JSON.stringify(this.user.user);
     await axios
       .put("api/profile/me", body, config)
