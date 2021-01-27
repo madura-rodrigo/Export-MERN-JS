@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: "100%",
     marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(4),
     "& .MuiTextField-root": {
       margin: theme.spacing(2),
       width: "40ch",
@@ -112,7 +113,7 @@ const Profile = () => {
                 name="email"
                 autoComplete="email"
                 value={user.email}
-                disabled="true"
+                disabled
               />
               <div>
                 <TextField
