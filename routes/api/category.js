@@ -91,6 +91,26 @@ router.get("/:id", auth(), async (req, res) => {
   }
 });
 
+// @route GET api/category
+// @desc get all categories
+// @access Private
+router.get("/", async (req, res) => {
+  try {
+    const categories = await Category.find({}).select(
+      "id name description iconUrl"
+    );
+    if (!categories)
+      return res.status(400).json({ msg: "There is no categories." });
+    res.json(categories);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind == "ObjectId") {
+      return res.status(400).json({ msg: "There is no categories." });
+    }
+    res.status(500).send("Server error");
+  }
+});
+
 // @route GET api/category/search
 // @desc search category
 // @access Private
