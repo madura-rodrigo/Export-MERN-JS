@@ -108,6 +108,7 @@ class UserStore {
     localStorage.removeItem("name");
     localStorage.removeItem("avatar");
     this.user.isAuthenticated = false;
+    this.user.user = {};
     this.setAuthToken(localStorage.token);
   };
 
@@ -125,6 +126,11 @@ class UserStore {
 
   get avatar() {
     return this.user.user.avatar;
+  }
+
+  get isRoleAdmin() {
+    console.log(this.user.user.users);
+    return this.user.user.users === "Seller" ? true : false;
   }
 }
 
