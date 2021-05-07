@@ -13,6 +13,8 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Typography, Box, Card } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import EditCategory from "./EditCategory";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +42,7 @@ const Categories = () => {
     rootStore.categoryStore.load();
   }, []);
   const categoryData = rootStore.categoryStore.categoryData;
+
   return (
     <div className="products-catagories-area clearfix">
       <div className="amado-pro-catagory clearfix">
@@ -75,9 +78,7 @@ const Categories = () => {
                       bgcolor="background.paper"
                     >
                       <Box p={1}>
-                        <IconButton size="small" aria-label={`Edit`}>
-                          <EditIcon />
-                        </IconButton>
+                        <EditCategory category={tile} />
                         <IconButton size="small" aria-label={`Delete`}>
                           <DeleteIcon />
                         </IconButton>

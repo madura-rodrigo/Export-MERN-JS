@@ -13,6 +13,7 @@ import AlertComponent from "./components/layout/Alert";
 import Dashboard from "./components/layout/Dashboard";
 import PrivateRoute from "./components/routing/PrivateRoute";
 import Profile from "./components/layout/Profile";
+import EditCategory from "./components/layout/EditCategory";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
           <Dashboard />
           <div className="main-content-wrapper d-flex clearfix">
             <Header />
-            <Route exact path="/" component={Categories} />
+            <Route exact path="/" component={Categories}></Route>
+            <PrivateRoute path="/editCategory" component={EditCategory} />
             <div className="single-product-area section-padding-100 clearfix container-fluid">
               <AlertComponent />
               <Switch>

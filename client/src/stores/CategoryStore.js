@@ -23,6 +23,25 @@ class CategoryStore {
       });
   };
 
+  updateCategory = async (e) => {
+    const config = {
+      headers: { "Content-Type": "application/json" },
+    };
+    const body = JSON.stringify(e);
+    await axios
+      .post("api/category/", body, config)
+      .then((response) => {
+        this.categories = this.categories.map((c) =>
+          c._id === e._id ? response.data : c
+        );
+      })
+      .catch((err) => {
+        if (err.response) {
+          this.rootStore.alertStore.addError(err.response.data.errors);
+        }
+      });
+  };
+
   get categoryData() {
     return this.categories;
   }

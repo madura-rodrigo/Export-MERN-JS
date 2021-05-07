@@ -27,10 +27,10 @@ router.post(
     }
 
     try {
-      const { id, name, description, iconUrl } = req.body;
+      const { _id, name, description, iconUrl } = req.body;
 
       const categoryFields = {};
-      if (id) categoryFields.id = id;
+      if (_id) categoryFields.id = _id;
       if (name) categoryFields.name = name;
       if (description) categoryFields.description = description;
       if (iconUrl) categoryFields.iconUrl = iconUrl;
