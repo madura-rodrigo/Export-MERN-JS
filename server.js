@@ -5,7 +5,7 @@ const app = express();
 
 connectDB();
 
-app.use(express.json({ extended: false }));
+app.use(express.json({ limit: "50mb", extended: true }));
 
 app.get("/", (req, res) => res.send("API running."));
 
@@ -20,6 +20,8 @@ app.use("/api/category", require("./routes/api/category"));
 app.use("/api/products", require("./routes/api/product"));
 
 app.use("/api/product-stocks", require("./routes/api/productStock"));
+
+app.use("/static", express.static("uploads"));
 
 const PORT = process.env.PORT || 5000;
 

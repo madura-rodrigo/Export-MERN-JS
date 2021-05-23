@@ -42,6 +42,23 @@ class CategoryStore {
       });
   };
 
+  addCategory = async (e) => {
+    const config = {
+      headers: { "Content-Type": "multipart/form-data" },
+    };
+    //const body = JSON.stringify(e);
+    await axios
+      .post("api/category/", e, config)
+      .then((response) => {
+        this.categories.push(response.data);
+      })
+      .catch((err) => {
+        if (err.response) {
+          this.rootStore.alertStore.addError(err.response.data.errors);
+        }
+      });
+  };
+
   get categoryData() {
     return this.categories;
   }

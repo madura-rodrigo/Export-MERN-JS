@@ -14,14 +14,6 @@ import IconButton from "@material-ui/core/IconButton";
 import { StoreContext } from "../../stores/StoreContextProvider";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(-1),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
   form: {
     width: "100%",
     marginTop: theme.spacing(1),
@@ -77,49 +69,47 @@ const EditCategory = (props) => {
           horizontal: "center",
         }}
       >
-        <Paper className={classes.paper}>
-          <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
-            <Box display="flex" m={1} p={1} bgcolor="background.paper">
-              <Box p={1} flexGrow={1}>
-                <Typography component="h1" variant="h5">
-                  Edit Category - {category.name}
-                </Typography>
-              </Box>
-              <Box p={1} alignSelf="flex-end">
-                <Button type="submit" variant="contained" color="primary">
-                  Save
-                </Button>
-              </Box>
+        <form className={classes.form} onSubmit={(e) => onSubmit(e)}>
+          <Box display="flex" m={1} p={1} bgcolor="background.paper">
+            <Box p={1} flexGrow={1}>
+              <Typography component="h1" variant="h5">
+                Edit Category - {category.name}
+              </Typography>
             </Box>
-            <Grid container spacing={5}>
-              <Grid item xs={9}>
-                <div>
-                  <TextField
-                    variant="standard"
-                    required
-                    fullWidth
-                    id="name"
-                    label="name"
-                    name="name"
-                    value={category.name}
-                    onChange={(e) => onChange(e)}
-                    autoFocus
-                  />
-                  <TextField
-                    variant="standard"
-                    required
-                    fullWidth
-                    id="description"
-                    label="description"
-                    name="description"
-                    value={category.description}
-                    onChange={(e) => onChange(e)}
-                  />
-                </div>
-              </Grid>
+            <Box p={1} alignSelf="flex-end">
+              <Button type="submit" variant="contained" color="primary">
+                Save
+              </Button>
+            </Box>
+          </Box>
+          <Grid container spacing={5}>
+            <Grid item xs={9}>
+              <div>
+                <TextField
+                  variant="standard"
+                  required
+                  fullWidth
+                  id="name"
+                  label="name"
+                  name="name"
+                  value={category.name}
+                  onChange={(e) => onChange(e)}
+                  autoFocus
+                />
+                <TextField
+                  variant="standard"
+                  required
+                  fullWidth
+                  id="description"
+                  label="description"
+                  name="description"
+                  value={category.description}
+                  onChange={(e) => onChange(e)}
+                />
+              </div>
             </Grid>
-          </form>
-        </Paper>
+          </Grid>
+        </form>
       </Popover>
     </div>
   );

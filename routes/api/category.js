@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const gravatar = require("gravatar");
 const auth = require("../../middleware/auth");
-const { check, validationResult } = require("express-validator");
+const upload = require("../../middleware/file-upload");
+const { check, validationResult, body } = require("express-validator");
 const mongoose = require("mongoose");
+const multer = require("multer");
+const config = require("config");
 
 const Category = require("../../models/Category");
 const { Router } = require("express");
@@ -16,9 +19,10 @@ router.post(
   [
     auth(),
     [
-      check("name", "Category name is required").not().isEmpty(),
-      check("description", "Category description is required").not().isEmpty(),
+      body("name", "Category name is required").isEmpty(),
+      body("description", "Category description is required").isEmpty(),
     ],
+    upload("categories/").single("image"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -27,13 +31,14 @@ router.post(
     }
 
     try {
-      const { _id, name, description, iconUrl } = req.body;
+      const { _id, name, description } = req.body;
 
       const categoryFields = {};
       if (_id) categoryFields.id = _id;
       if (name) categoryFields.name = name;
       if (description) categoryFields.description = description;
-      if (iconUrl) categoryFields.iconUrl = iconUrl;
+      if (req.file.path)
+        categoryFields.iconUrl = "categories/" + req.file.filename;
 
       //Check user in DB
       if (categoryFields.id) {
@@ -52,13 +57,6 @@ router.post(
           return res.json(category);
         }
       }
-
-      const avatar = gravatar.url(name, {
-        s: "200",
-        r: "pg",
-        d: "mm",
-      });
-      categoryFields.iconUrl = avatar;
 
       //Make new category
       category = new Category(categoryFields);
