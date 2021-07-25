@@ -10,13 +10,13 @@ const Login = (props) => {
     password: "",
   });
 
-  const { email, password } = formData;
-
-  const onChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = ({ target }) => {
+    const { name, value } = target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const onSubmit = async (e) => {
+    const { email, password } = formData;
     e.preventDefault();
     const user = {
       email,
@@ -33,7 +33,7 @@ const Login = (props) => {
 
   return (
     <div className="single-product-area section-padding-100 clearfix container-fluid">
-      <Form onSubmit={(e) => onSubmit(e)}>
+      <Form onSubmit={onSubmit}>
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -42,7 +42,7 @@ const Login = (props) => {
             placeholder="Enter email"
             value={email}
             required
-            onChange={(e) => onChange(e)}
+            onChange={onChange}
           />
           <Form.Text className="text-muted">
             We'll never share your email with anyone else.
@@ -56,7 +56,7 @@ const Login = (props) => {
             name="password"
             placeholder="Password"
             required
-            onChange={(e) => onChange(e)}
+            onChange={onChange}
           />
         </Form.Group>
         <Button className="btn amado-btn mb-15" variant="primary" type="submit">
