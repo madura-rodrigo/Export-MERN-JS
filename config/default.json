@@ -1,5 +1,5 @@
 {
-    "mongoURI": "mongodb+srv://madurascpdn:hjkl678!@devcluster.skilu.mongodb.net/<dbname>?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://user:pwd@devcluster.skilu.mongodb.net/<dbname>?retryWrites=true&w=majority",
     "jwtSecretKey" : "mysecrettoken",
     "product-rating" : "[1,2,3,4,5]",
     "uploadURI" : "uploads/"
